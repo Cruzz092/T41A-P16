@@ -29,7 +29,12 @@ jobs:
         sudo apt-get install python3-pip python3-psycopg2 -y
         pip install pytest
 
+    - name: Set Postgres password
+      run: echo "PGPASSWORD=postgres" >> $GITHUB_ENV
+
     - name: Run SQL setup
+      env:
+        PGPASSWORD: postgres
       run: |
         psql -h localhost -U postgres -f 01_create_tables.sql
         psql -h localhost -U postgres -f 02_create_procedure.sql
@@ -38,4 +43,7 @@ jobs:
         psql -h localhost -U postgres -f 05_insert_data.sql
 
     - name: Run Tests
+      env:
+        PGPASSWORD: postgres
       run: pytest -q
+
